@@ -7,10 +7,7 @@ const errorMiddleware = require('./middleware/error.middleware')
 
 app.use(cors())
 
-app.use(express.json({
-    origin: '*',
-    creditials: false,
-}));
+app.use(express.json());
 
 const User = require('./models/User');
 const Book = require('./models/Book');
@@ -29,11 +26,15 @@ const authRoutes = require('./routes/auth.routes');
 const bookRoutes = require('./routes/book.routes');
 const readingRoutes = require('./routes/reading.routes');
 const gamificationRoutes = require('./routes/gamification.routes');
+const streakRoutes = require('./routes/streak.routes');
+const completionRoutes = require('./routes/completion.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/reading', readingRoutes);
 app.use('/api/gamification', gamificationRoutes)
+app.use('/api/streak', streakRoutes);
+app.use('/api/completion', completionRoutes);
 
 
 app.get('/', (req, res)=> {
