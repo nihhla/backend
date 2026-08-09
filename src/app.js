@@ -28,10 +28,12 @@ console.log('All ReadQuest models loaded successfully');
 const authRoutes = require('./routes/auth.routes');
 const bookRoutes = require('./routes/book.routes');
 const readingRoutes = require('./routes/reading.routes');
+const gamificationRoutes = require('./routes/gamification.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/reading', readingRoutes);
+app.use('/api/gamification', gamificationRoutes)
 
 
 app.get('/', (req, res)=> {
