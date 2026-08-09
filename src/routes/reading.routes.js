@@ -37,7 +37,7 @@ router.get(
 );
 
 router.post(
-    '/start',
+    '/:bookId/start',
     startBook
 );
 

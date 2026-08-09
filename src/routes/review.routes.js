@@ -1,11 +1,8 @@
 const express = require('express');
 
 const {
-    create,
-    update,
-    remove,
-    getForBook,
-    getMine
+    createBookReview,
+    getReviews
 } = require('../controllers/review.controller');
 
 const {
@@ -15,37 +12,19 @@ const {
 
 const router = express.Router();
 
-router.get(
-    '/book/:bookId',
-    getForBook
+router.use(
+    authenticate,
+    requireStudent
 );
 
 router.get(
-    '/book/:bookId/my',
-    authenticate,
-    requireStudent,
-    getMine
+    '/book/:bookId',
+    getReviews
 );
 
 router.post(
     '/',
-    authenticate,
-    requireStudent,
-    create
-);
-
-router.put(
-    '/:id',
-    authenticate,
-    requireStudent,
-    update
-);
-
-router.delete(
-    '/:id',
-    authenticate,
-    requireStudent,
-    remove
+    createBookReview
 );
 
 module.exports = router;

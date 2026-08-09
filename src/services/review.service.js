@@ -1,5 +1,4 @@
 const Review = require('../models/Review');
-const Book = require('../models/Book');
 const ReadingProgress = require('../models/ReadingProgress');
 
 const createReview = async (
@@ -8,37 +7,58 @@ const createReview = async (
     rating,
     comment
 ) => {
-    if (!bookId || rating === undefined || !comment) {
+    const reading =
+        await ReadingProgress.findOne({
+            userId,
+            bookId
+        });
+
+    if (!reading) {
         const error = new Error(
-            'Book, rating and comment are required'
+            'Start and complete this book before reviewing it'
         );
 
         error.statusCode = 400;
         throw error;
     }
 
-    const book = await Book.findById(bookId);
+    if (
+        reading.status !== 'completed' ||
+        reading.progress < 100 ||
+        !reading.quizPassed
+    ) {
+        const error = new Error(
+            'You must complete the book and pass the quiz before reviewing it'
+        );
 
-    if (!book) {
-        const error = new Error('Book not found');
-
-        error.statusCode = 404;
+        error.statusCode = 400;
         throw error;
     }
 
-    const completedReading =
-        await ReadingProgress.findOne({
-            userId,
-            bookId,
-            status: 'completed'
-        });
+    const numericRating = Number(rating);
 
-    if (!completedReading) {
+    if (
+        !Number.isInteger(numericRating) ||
+        numericRating < 1 ||
+        numericRating > 5
+    ) {
         const error = new Error(
-            'You can review a book only after completing it'
+            'Rating must be between 1 and 5'
         );
 
-        error.statusCode = 403;
+        error.statusCode = 400;
+        throw error;
+    }
+
+    if (
+        !comment ||
+        !comment.trim()
+    ) {
+        const error = new Error(
+            'Review comment is required'
+        );
+
+        error.statusCode = 400;
         throw error;
     }
 
@@ -53,125 +73,30 @@ const createReview = async (
             'You have already reviewed this book'
         );
 
-        error.statusCode = 400;
+        error.statusCode = 409;
         throw error;
     }
 
-    const review = await Review.create({
-        userId,
-        bookId,
-        rating,
-        comment
-    });
+    const review =
+        await Review.create({
+            userId,
+            bookId,
+            rating: numericRating,
+            comment: comment.trim()
+        });
 
-    await updateBookRating(bookId);
-
-    return Review.findById(review._id)
-        .populate(
-            'userId',
-            'name studentId'
-        )
-        .populate(
-            'bookId',
-            'title author cover'
-        );
-};
-
-const updateReview = async (
-    userId,
-    reviewId,
-    rating,
-    comment
-) => {
-    const review = await Review.findOne({
-        _id: reviewId,
-        userId
-    });
-
-    if (!review) {
-        const error = new Error(
-            'Review not found'
-        );
-
-        error.statusCode = 404;
-        throw error;
-    }
-
-    if (rating !== undefined) {
-        review.rating = rating;
-    }
-
-    if (comment !== undefined) {
-        review.comment = comment;
-    }
-
-    await review.save();
-
-    await updateBookRating(
-        review.bookId
-    );
-
-    return Review.findById(review._id)
-        .populate(
-            'userId',
-            'name studentId'
-        )
-        .populate(
-            'bookId',
-            'title author cover'
-        );
-};
-
-const deleteReview = async (
-    userId,
-    reviewId
-) => {
-    const review = await Review.findOne({
-        _id: reviewId,
-        userId
-    });
-
-    if (!review) {
-        const error = new Error(
-            'Review not found'
-        );
-
-        error.statusCode = 404;
-        throw error;
-    }
-
-    const bookId = review.bookId;
-
-    await Review.deleteOne({
-        _id: reviewId
-    });
-
-    await updateBookRating(bookId);
-
-    return true;
+    return review;
 };
 
 const getBookReviews = async (
     bookId
 ) => {
-    const book = await Book.findById(bookId)
-        .select('_id title');
-
-    if (!book) {
-        const error = new Error(
-            'Book not found'
-        );
-
-        error.statusCode = 404;
-        throw error;
-    }
-
     return Review.find({
         bookId
     })
         .populate(
             'userId',
-            'name studentId'
+            'name'
         )
         .sort({
             createdAt: -1
@@ -179,74 +104,7 @@ const getBookReviews = async (
         .lean();
 };
 
-const getMyReview = async (
-    userId,
-    bookId
-) => {
-    return Review.findOne({
-        userId,
-        bookId
-    })
-        .populate(
-            'bookId',
-            'title author cover'
-        )
-        .lean();
-};
-
-const updateBookRating = async (
-    bookId
-) => {
-    const result = await Review.aggregate([
-        {
-            $match: {
-                bookId
-            }
-        },
-        {
-            $group: {
-                _id: '$bookId',
-                averageRating: {
-                    $avg: '$rating'
-                },
-                reviewCount: {
-                    $sum: 1
-                }
-            }
-        }
-    ]);
-
-    const averageRating =
-        result.length > 0
-            ? Number(
-                  result[0].averageRating.toFixed(1)
-              )
-            : 0;
-
-    const reviewCount =
-        result.length > 0
-            ? result[0].reviewCount
-            : 0;
-
-    await Book.findByIdAndUpdate(
-        bookId,
-        {
-            averageRating,
-            reviewCount
-        }
-    );
-
-    return {
-        averageRating,
-        reviewCount
-    };
-};
-
 module.exports = {
     createReview,
-    updateReview,
-    deleteReview,
-    getBookReviews,
-    getMyReview,
-    updateBookRating
+    getBookReviews
 };

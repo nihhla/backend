@@ -48,24 +48,22 @@ const getSingleReadingController =
     );
 
 const startBook = asyncHandler(
-    async (req, res) => {
-        const {
-            bookId
-        } = req.body;
+  async (req, res) => {
+    const { bookId } = req.params;
 
-        const reading =
-            await startReading(
-                req.user._id,
-                bookId
-            );
+    const reading =
+      await startReading(
+        req.user._id,
+        bookId
+      );
 
-        return successResponse(
-            res,
-            { reading },
-            'Reading started successfully',
-            201
-        );
-    }
+    return successResponse(
+      res,
+      { reading },
+      'Reading started successfully',
+      201
+    );
+  }
 );
 
 const updateBookProgress =
