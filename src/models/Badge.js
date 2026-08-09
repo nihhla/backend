@@ -5,45 +5,37 @@ const badgeSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
     },
-
     description: {
       type: String,
       required: true,
       trim: true,
     },
-
     icon: {
       type: String,
       default: '🏆',
     },
-
-    requirementType: {
-      type: String,
-      enum: [
-        'books_completed',
-        'xp',
-        'streak',
-        'challenge_completed',
-        'consecutive_months',
-      ],
-      required: true,
+    requirement: {
+      type: {
+        type: String,
+        enum: [
+          'books_completed',
+          'streak',
+          'xp',
+          'challenge_completed',
+        ],
+        required: true,
+      },
+      value: {
+        type: Number,
+        default: 1,
+      },
     },
-
-    requirementValue: {
-      type: Number,
-      default: 1,
-      min: 1,
-    },
-
     xpReward: {
       type: Number,
       default: 0,
-      min: 0,
     },
-
     isActive: {
       type: Boolean,
       default: true,
@@ -54,4 +46,7 @@ const badgeSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Badge', badgeSchema);
+module.exports = mongoose.model(
+  'Badge',
+  badgeSchema
+);

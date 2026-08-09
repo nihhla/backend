@@ -7,13 +7,11 @@ const userBadgeSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-
     badgeId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Badge',
       required: true,
     },
-
     unlockedAt: {
       type: Date,
       default: Date.now,
@@ -25,8 +23,13 @@ const userBadgeSchema = new mongoose.Schema(
 );
 
 userBadgeSchema.index(
-  { userId: 1, badgeId: 1 },
-  { unique: true }
+  {
+    userId: 1,
+    badgeId: 1,
+  },
+  {
+    unique: true,
+  }
 );
 
 module.exports = mongoose.model(

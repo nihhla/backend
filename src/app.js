@@ -28,6 +28,7 @@ const readingRoutes = require('./routes/reading.routes');
 const gamificationRoutes = require('./routes/gamification.routes');
 const streakRoutes = require('./routes/streak.routes');
 const completionRoutes = require('./routes/completion.routes');
+const badgeRoutes = require('./routes/badge.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
@@ -35,6 +36,7 @@ app.use('/api/reading', readingRoutes);
 app.use('/api/gamification', gamificationRoutes)
 app.use('/api/streak', streakRoutes);
 app.use('/api/completion', completionRoutes);
+app.use('/api/badges', badgeRoutes);
 
 
 app.get('/', (req, res)=> {
