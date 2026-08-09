@@ -2,6 +2,10 @@ const ReadingProgress = require('../models/ReadingProgress');
 const Book = require('../models/Book');
 
 const {
+    updateAllUserChallenges
+} = require('./challenge.service');
+
+const {
     awardXP
 } = require('./gamification.service');
 
@@ -157,6 +161,9 @@ const completeBook = async (userId, readingId, answers) => {
     const badgeResult =
         await checkAndUnlockBadges(userId);
 
+    const challengeProgress =
+        await updateAllUserChallenges(userId);
+
     return {
         completed: true,
         passed: true,
@@ -170,6 +177,7 @@ const completeBook = async (userId, readingId, answers) => {
             total: completionReward + quizReward
         },
         badges: badgeResult.unlocked || [],
+        challenges: challengeProgress,
         reading
     };
 };
