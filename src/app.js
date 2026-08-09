@@ -26,8 +26,11 @@ const XPTransaction = require('./models/XPTransaction');
 console.log('All ReadQuest models loaded successfully');
 
 const authRoutes = require('./routes/auth.routes');
+const bookRoutes = require('./routes/book.routes');
 
 app.use('/api/auth', authRoutes);
+app.use('/api/books', bookRoutes);
+
 
 app.get('/', (req, res)=> {
     res.send('api working')
