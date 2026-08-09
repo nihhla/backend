@@ -85,6 +85,16 @@ const bookSchema = new mongoose.Schema(
       min: 1,
     },
 
+    averageRating: {
+        type: Number,
+        default: 0
+    },
+
+    reviewCount: {
+        type: Number,
+        default: 0
+    },
+
     xpReward: {
       type: Number,
       default: 50,

@@ -30,7 +30,7 @@ const streakRoutes = require('./routes/streak.routes');
 const completionRoutes = require('./routes/completion.routes');
 const badgeRoutes = require('./routes/badge.routes');
 const challengeRoutes = require('./routes/challenge.routes');
-
+const reviewRoutes = require('./routes/review.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
@@ -40,6 +40,7 @@ app.use('/api/streak', streakRoutes);
 app.use('/api/completion', completionRoutes);
 app.use('/api/badges', badgeRoutes);
 app.use('/api/challenges', challengeRoutes)
+app.use('/api/reviews', reviewRoutes)
 
 app.get('/', (req, res)=> {
     res.send('api working')
