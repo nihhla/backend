@@ -1,39 +1,69 @@
 const express = require('express');
 
 const {
-  getReading,
-  getSingleReading,
-  startBook,
-  updateBookProgress,
-  startSession,
-  endSession,
-  getQuiz,
+    getReading,
+    getSingleReading,
+    startBook,
+    updateBookProgress,
+    startSession,
+    endSession,
+    getReadingSessions,
+    getQuiz
 } = require('../controllers/reading.controller');
 
 const {
-  authenticate,
-  requireStudent,
+    authenticate,
+    requireStudent
 } = require('../middleware/auth.middleware');
 
 const router = express.Router();
 
-router.use(authenticate, requireStudent);
+router.use(authenticate);
+router.use(requireStudent);
 
-router.get('/', getReading);
-
-router.post('/start', startBook);
-
-router.get('/:id', getSingleReading);
-
-router.put('/:id/progress', updateBookProgress);
-
-router.post('/:id/session/start', startSession);
-
-router.post(
-  '/:id/session/:sessionId/end',
-  endSession
+router.get(
+    '/',
+    getReading
 );
 
-router.get('/:id/quiz', getQuiz);
+router.get(
+    '/session',
+    getReadingSessions
+);
+
+router.get(
+    '/sessions',
+    getReadingSessions
+);
+
+router.post(
+    '/start',
+    startBook
+);
+
+router.post(
+    '/session/:id',
+    startSession
+);
+
+router.patch(
+    '/session/:sessionId/end',
+    endSession
+);
+
+router.patch(
+    '/:id/progress',
+    updateBookProgress
+);
+
+router.get(
+    '/:id/quiz',
+    getQuiz
+);
+
+router.get(
+    '/:id',
+    getSingleReading
+);
 
 module.exports = router;
