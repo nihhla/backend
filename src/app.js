@@ -12,6 +12,23 @@ app.use(express.json({
     creditials: false,
 }));
 
+const User = require('./models/User');
+const Book = require('./models/Book');
+const ReadingProgress = require('./models/ReadingProgress');
+const ReadingSession = require('./models/ReadingSession');
+const Challenge = require('./models/Challenge');
+const ChallengeProgress = require('./models/ChallengeProgress');
+const Badge = require('./models/Badge');
+const UserBadge = require('./models/UserBadge');
+const Review = require('./models/Review');
+const XPTransaction = require('./models/XPTransaction');
+
+console.log('All ReadQuest models loaded successfully');
+
+const authRoutes = require('./routes/auth.routes');
+
+app.use('/api/auth', authRoutes);
+
 app.get('/', (req, res)=> {
     res.send('api working')
 })
