@@ -27,9 +27,11 @@ console.log('All ReadQuest models loaded successfully');
 
 const authRoutes = require('./routes/auth.routes');
 const bookRoutes = require('./routes/book.routes');
+const readingRoutes = require('./routes/reading.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
+app.use('/api/reading', readingRoutes);
 
 
 app.get('/', (req, res)=> {
